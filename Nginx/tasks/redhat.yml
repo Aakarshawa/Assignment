@@ -1,0 +1,59 @@
+---
+- name: Installing epel release for nginx on Centos Machine
+  yum:
+   name: epel-release
+   state: installed
+
+- name: Installing nginx server on Centos Machine
+  yum:
+   name: nginx
+   state: installed
+  notify: reload nginx
+
+- name: add the OS specific variables
+  include_vars: RedHat.yml
+
+- name: create user for nginx
+  user:
+   name: "{{ nginx_user }}"
+   comment: "{{ nginx_user }}"
+   shell: /usr/sbin/nologin
+   home: "/var/{{ nginx_user }}"
+
+- name: config should not be worldwide read- or writeable
+  file:
+   path: "/etc/nginx"
+   mode: "o-rw"
+   owner: "root"
+   group: "root"
+   recurse: true
+
+- name: create additional configuration
+  template:
+   src: "hardening.conf.j2"
+   dest: "{{ nginx_config_conf_dir }}/90.hardening.conf"
+   owner: "root"
+   group: "root"
+  notify: reload nginx
+
+- name: change configuration in main nginx.conf
+  template:
+   src: "nginx.conf.j2"
+   dest: "{{ nginx_root_dir }}/nginx.conf"
+   owner: "root"
+   group: "root"
+   mode: "0640"
+  notify: reload nginx
+
+- name: generate dh group
+  command: openssl dhparam -out {{ nginx_dh_param }} {{ nginx_dh_size }}
+  args:
+   creates: "{{ nginx_dh_param }}"
+  notify: reload nginx
+
+- name: change port of nginx
+  replace:
+   path: "{{ nginx_default_conf }}"
+   regexp: '[0-9]* default_server;$'
+   replace: "{{ nginx_port }} default_server;"
+  notify: reload nginx
