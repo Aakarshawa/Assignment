@@ -1,10 +1,9 @@
-# Pull the latest version of the Python container.
-FROM python:latest
-# Add the requirements.txt file to the image.
-ADD requirements.txt /app/requirements.txt
-# Set the working directory to /app/.
-WORKDIR /app/
-# Install Python dependencies.
-RUN pip install -r requirements.txt
-# Create an unprivileged user for running our Python code.
-RUN adduser — disabled-password — gecos ‘’ app
+FROM alpine:3.7
+ADD requirements.txt /home/app/
+WORKDIR /home/app/
+RUN apk add --no-cache postgresql-dev gcc python3 python3-dev musl-dev && \
+    python3 -m ensurepip && \
+    rm -r /usr/lib/python*/ensurepip && \
+    pip3 install --upgrade pip setuptools && \
+    rm -r /root/.cache && \
+    pip3 install -r requirements.txt
