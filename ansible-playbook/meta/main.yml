@@ -1,0 +1,19 @@
+galaxy_info:
+  author: thiagogomesverissimo
+  description: deploy laravel
+  company: USPdev
+  role_name: deploy_laravel
+
+  license: "license (BSD, MIT)"
+
+  min_ansible_version: 2.2
+  github_branch: master
+
+  platforms:
+   - name: Ubuntu
+     versions:
+     - bionic
+  galaxy_tags:
+    - laravel
+
+dependencies: []

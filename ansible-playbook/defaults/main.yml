@@ -1,0 +1,41 @@
+---
+deploy_laravel_domain: "uspdev.usp.br"
+deploy_laravel_dest: "/var/www/"
+deploy_laravel_repo: "https://github.com/laravel/laravel.git"
+deploy_laravel_repo_version: "master"
+
+# Disables installation of require-dev packages
+deploy_laravel_composer_no_dev: no
+
+# turn on/off some options
+deploy_laravel_build_assets: yes
+deploy_laravel_generate_key: no
+deploy_laravel_use_apache: yes
+
+# do you desire get password database from a file?
+deploy_laravel_dbpass_from_file: no
+deploy_laravel_dbpass_file: "/etc/.jenkinsdeploy/{{deploy_laravel_app}}"
+
+# Env variables
+deploy_laravel_env:
+  - name: DB_USERNAME
+    value: 'laravel'
+  - name: DB_PASSWORD
+    value: 'secret'
+  - name: DB_DATABASE
+    value: 'laravel'
+  - name: DB_HOST
+    value: "localhost"
+  - name: APP_ENV
+    value: "production"
+
+# task schedule vars to cron
+deploy_laravel_cron: false
+deploy_laravel_cron_name: "task scheduling {{ deploy_laravel_domain }}"
+deploy_laravel_cron_job: "cd {{ deploy_laravel_dest}}{{ deploy_laravel_domain }}
+                          && php artisan schedule:run >> /dev/null 2>&1"
+deploy_laravel_cron_minute: "0"
+deploy_laravel_cron_hour: "0,6,12,18"
+deploy_laravel_cron_day: "*"
+deploy_laravel_cron_month: "*"
+deploy_laravel_cron_weekday: "*"

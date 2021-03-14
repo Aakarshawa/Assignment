@@ -1,0 +1,12 @@
+---
+- import_tasks: git.yml
+- import_tasks: composer.yml
+- import_tasks: env.yml
+- import_tasks: migration.yml
+- import_tasks: apache.yml
+- import_tasks: assets.yml
+- import_tasks: owner.yml
+- import_tasks: cache.yml
+- import_tasks: cron.yml
+  when: deploy_laravel_cron
+
